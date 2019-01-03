@@ -1,0 +1,11 @@
+[[constraint]]
+  branch = "master"
+  name = "github.com/andygrunwald/cachet"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/prometheus/alertmanager"
+
+[prune]
+  go-tests = true
+  unused-packages = true
