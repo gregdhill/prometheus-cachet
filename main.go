@@ -52,9 +52,11 @@ func (alt *alerts) cachetAlert(status, name, message string) {
 
 func (alt *alerts) prometheusAlert(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
+	log.Println("Receiving alert...")
 	data := template.Data{}
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		fmt.Println(err)
+		log.Printf("Error decoding alert: %s", err.Error())
+		log.Println(r.Body)
 		return
 	}
 	status := data.Status
@@ -88,7 +90,10 @@ func main() {
 	alerts := alerts{incidents: make(map[string]int), client: client}
 	http.HandleFunc("/health", health)
 	http.HandleFunc("/webhook", alerts.prometheusAlert)
-	listenAddress := "127.0.0.1:8080"
+	listenAddress := ":80"
+	if os.Getenv("PORT") != "" {
+		listenAddress = ":" + os.Getenv("PORT")
+	}
 	log.Printf("Listening on %v", listenAddress)
 	log.Fatal(http.ListenAndServe(listenAddress, nil))
 }
