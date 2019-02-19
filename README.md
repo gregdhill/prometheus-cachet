@@ -1,4 +1,4 @@
-# Bridge - Cachet & Prometheus
+# [Prometheus Alerts](https://prometheus.io/docs/alerting/alertmanager/) to [Cachet](http://cachethq.io/)
 
 Small go based microservice to receive Prometheus Alertmanager triggers and update corresponding incidents in Cachet.
 
@@ -9,6 +9,8 @@ Small go based microservice to receive Prometheus Alertmanager triggers and upda
 
 ## Alertmanager Hook
 
+The following alert matches on label `public` set to `true` then forwards to the configured webhook:
+
 ```
 route:
   receiver: cachet
@@ -18,10 +20,10 @@ route:
   repeat_interval: 1h
   routes:
     - receiver: cachet
-      match_re:
-        severity: .*
+      match:
+        public: "true"
   receivers:
     - name: cachet
       webhook_configs:
-        - url: "http://status-cachet/webhook"
+        - url: "http://status-cachet:80/webhook"
 ```
